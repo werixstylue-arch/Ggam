@@ -1,0 +1,55 @@
+{
+  "summary": "Ran backend pytest regression and frontend desktop/mobile integration checks on public URL for latest open-world/no-RPG requirements. Core map/building/places/territory/gating/auth flows mostly pass; found one critical camera-position persistence regression in frontend startup logic.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "App initialization camera restore",
+        "issue": "Saved camera positions in low-coordinate regions are forcibly reset to capital on reload. App.js calls /players/home when x<10000 && y<10000, overwriting valid saved positions.",
+        "selector": "[data-testid=\"player-coordinates\"]",
+        "priority": "CRITICAL"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Position persistence",
+        "issue": "After POST /api/players/position {x:5000,y:5000}, reloading UI resets to 32768,32808 and backend /players/me is overwritten to spawn due frontend initialize guard.",
+        "affected_selectors": [
+          "[data-testid=\"player-coordinates\"]",
+          "[data-testid=\"brand-home\"]"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_kingcom_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Remove/replace the App.js startup condition that auto-calls /players/home for x<10000 && y<10000; respect persisted camera coordinates across full world bounds.",
+    "Retest position persistence after fix using a low-coordinate valid map location (e.g., 5000,5000).",
+    "Optional: improve deterministic mobile building tap test docs/anchors (interaction works, but exact sampled tap points vary by viewport/camera).",
+    "Populate /app/memory/test_credentials.md when non-guest auth credentials become required."
+  ],
+  "critical_code_review_comments": [
+    "frontend/src/App.js line 28 mutates server state during startup for legitimate coordinates (x<10000 && y<10000), breaking persisted map-camera behavior.",
+    "Test credentials file is present but empty; acceptable for current guest-only testing, but add records when privileged flows are introduced."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_kingcom_api.py",
+    "/app/test_reports/iteration_2.json"
+  ],
+  "success_rate": {
+    "backend": "91%",
+    "frontend": "88%"
+  },
+  "seed_data_creation": "Transient guest players/worlds/places created via tests; cleanup fixture removes test-created records by player_id/world_id/contracts at session teardown.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Backend: 10 passed, 1 skipped (creatable token scarcity) on updated test suite aligned with no-RPG/name-only profile/open-world constraints. Frontend verified: no overflow on 1920x800 and 390x844, HQ click(960,230) works on desktop 1920x800, HQ enter/exit works desktop+mobile, places save/visit/remove works, settings persist, view-territory-on-map moves camera without membership gate. Critical unresolved regression: startup camera reset for low coordinates due App.js initialize condition.",
+  "rca of the issue": "RCA: Frontend startup logic treats low coordinates as invalid and calls /players/home, which overwrites persisted position in backend and UI. Repro: (1) Save position via /api/players/position to x=5000,y=5000 with active token. (2) Reload page. (3) Coordinates show capital spawn and /api/players/me now returns spawn. Mitigation: remove heuristic threshold check and rely on backend validation/range checks only."
+}

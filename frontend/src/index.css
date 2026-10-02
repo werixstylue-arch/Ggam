@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Pixelify+Sans:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --background: 60 20% 98%; --foreground: 137 15% 20%; --card: 60 20% 98%; --card-foreground: 137 15% 20%; --popover: 60 20% 98%; --popover-foreground: 137 15% 20%; --primary: 148 27% 30%; --primary-foreground: 60 20% 98%; --secondary: 90 14% 93%; --secondary-foreground: 137 15% 20%; --muted: 90 14% 93%; --muted-foreground: 110 5% 47%; --accent: 90 14% 93%; --accent-foreground: 137 15% 20%; --destructive: 5 65% 48%; --destructive-foreground: 0 0% 98%; --border: 90 10% 86%; --input: 90 10% 84%; --ring: 148 27% 35%; --radius: 0.5rem; }
+  * { @apply border-border; box-sizing: border-box; letter-spacing: 0; }
+  body { @apply bg-background text-foreground; margin: 0; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+  button, input, a { -webkit-tap-highlight-color: transparent; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  button:focus-visible, a:focus-visible { outline: 2px solid #518969; outline-offset: 4px; }
+  ::selection { background: #d4e7b9; color: #244831; }
+  [data-debug-wrapper="true"] { display: contents !important; }
+}

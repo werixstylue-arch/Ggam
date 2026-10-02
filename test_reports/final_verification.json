@@ -1,0 +1,29 @@
+{
+  "scope": "Latest camera-only, building-focused Kingcom experience",
+  "date": "2026-10-02",
+  "status": "passed",
+  "resolved_findings": [
+    {
+      "source": "iteration_2.json",
+      "issue": "Startup reset of valid low camera coordinates",
+      "fix": "Removed coordinate-threshold reset and preserved zero coordinates with nullish fallback.",
+      "verification": ["Saved 5000,5000; reloaded; UI and server both retained 5000,5000.", "Saved 0,0; reloaded; UI and server both retained 0,0."]
+    }
+  ],
+  "frontend_checks": {
+    "desktop_1920x800_horizontal_overflow": [],
+    "mobile_390x844_horizontal_overflow": [],
+    "mobile_hq_building_selection": "passed",
+    "mobile_enter_headquarters_interface": "passed",
+    "mobile_exit_to_same_map": "passed",
+    "avatar_rendering": "removed",
+    "remote_player_rendering": "removed"
+  },
+  "backend_checks": {
+    "main_regression": "10 passed, 1 skipped due to temporary test token availability",
+    "independent_skipped_test_rerun": "test_contribution_daily_limit_and_owner_only_access_edit: passed",
+    "distinct_current_cases_passed": 11
+  },
+  "limitations": ["Real Phantom extension signing UI requires a user-installed wallet or Phantom in-app browser; server cryptographic verification and replay rejection passed automated tests."],
+  "mocked_apis": []
+}
